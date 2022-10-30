@@ -5,7 +5,7 @@
 </div>
 
 <div align="center">
-  An async and lightweight C# library for interacting with Netcraft.
+  An async and lightweight C# library for interacting with the Netcraft API.
 </div>
 
 ## Usage
@@ -30,11 +30,6 @@ Under the `Example` directory you can find a working demo project that implement
 ### Initializing a new API client
 ```csharp
 NetcraftClient client = new();
-```
-
-### Getting the current user
-```csharp
-User user = await client.GetCurrentUser();
 ```
 
 ### Reporting malicious URLs
