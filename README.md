@@ -1,4 +1,4 @@
-﻿# Urlscan
+﻿# Netcraft
 
 <div align="center">
   <img width="330" height="95" src="https://www.netcraft.com/assets/images/logo@2x.png">
@@ -9,21 +9,32 @@
 </div>
 
 ## Usage
-Available on NuGet as `Netcraft`, methods can be found under the classes `NetcraftClient`.<br>
-https://www.nuget.org/packages/Netcraft
+Provides an easy interface for interacting with the Netcraft API.
+
+Most importantly, this package allows you to automate the process of reporting malicious URLs and emails to Netcraft.
+
+To get started, add the library into your solution with either the `NuGet Package Manager` or the `dotnet` CLI.
+```rust
+dotnet add package Netcraft
+```
+
+For the primary classes to become available, import one or more of the used namespaces.
+```csharp
+using Netcraft;
+using Netcraft.Modules;
+using Netcraft.Entities;
+```
+
+Need more examples? Under the `Example` directory you can find a working demo project that implements this library.
 
 ## Features
-- Made with **.NET 6**
+- Built for **.NET 6** and **.NET 7**
 - Fully **async**
-- Extensive **documentation**
+- Extensive **XML documentation**
 - **No external dependencies** (uses integrated HTTP and JSON)
 - **Custom exceptions** (`NetcraftException`) for advanced catching
-- Example project to demonstrate all capabilities of the library
 - Report malicious URLs, emails and files
 - Get submission results and data
-
-## Example
-Under the `Example` directory you can find a working demo project that implements this library.
 
 ## Code Samples
 
@@ -86,8 +97,8 @@ LeaderboardEntry[] entries = await client.Misc.GetLeaderboard();
 
 - Task\<LeaderboardEntry[]> **GetLeaderboard**()
 
-## Official Links
-https://www.netcraft.com/<br>
-https://en.wikipedia.org/wiki/Netcraft
+## References
+- https://www.netcraft.com/
+- https://en.wikipedia.org/wiki/Netcraft
 
 *This is a community-ran library. Not affiliated with Netcraft Ltd.*

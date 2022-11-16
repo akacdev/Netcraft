@@ -1,13 +1,11 @@
 ﻿using Netcraft.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Netcraft
@@ -86,15 +84,18 @@ namespace Netcraft
 
         public static async Task<T> Deseralize<T>(this HttpResponseMessage res, JsonSerializerOptions options = null)
         {
-            string text = await res.Content.ReadAsStringAsync();
-            if (string.IsNullOrEmpty(text)) throw new NetcraftException("Response content is empty, can't parse as JSON.");
+            Stream stream = await res.Content.ReadAsStreamAsync();
+            if (stream.Length == 0) throw new NetcraftException("Response content is empty, can't parse as JSON.");
 
             try
             {
-                return JsonSerializer.Deserialize<T>(text, options ?? Constants.EnumOptions);
+                return await JsonSerializer.DeserializeAsync<T>(stream, options ?? Constants.EnumOptions);
             }
             catch (Exception ex)
             {
+                using StreamReader sr = new(stream);
+                string text = await sr.ReadToEndAsync();
+
                 throw new NetcraftException($"Exception while parsing JSON: {ex.GetType().Name} => {ex.Message}\nPreview: {text[..Math.Min(text.Length, PreviewMaxLength)]}");
             }
         }

@@ -11,9 +11,7 @@ namespace Netcraft
     public class NetcraftClient
     {
         public const int Version = 3;
-        public static readonly string BaseUrl = $"https://report.netcraft.com/api/v{Version}/";
-        public static readonly Uri BaseUri = new(BaseUrl);
-        public static readonly TimeSpan Timeout = TimeSpan.FromMinutes(5);
+        public static readonly Uri BaseUri = new($"https://report.netcraft.com/api/v{Version}/");
 
         /// <summary>
         /// The primary HTTP client for sending API requests.
@@ -22,7 +20,7 @@ namespace Netcraft
         {
             AutomaticDecompression = DecompressionMethods.All,
             AllowAutoRedirect = false
-        }) { BaseAddress = BaseUri };
+        }) { BaseAddress = BaseUri, DefaultRequestVersion = new(2, 0), Timeout = TimeSpan.FromMinutes(5) };
 
         /// <summary>
         /// Create a new instance of the API client.
@@ -30,7 +28,7 @@ namespace Netcraft
         public NetcraftClient()
         {
             Client.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip, deflate, br");
-            Client.DefaultRequestHeaders.UserAgent.ParseAdd("Netcraft C# Client - actually-akac/Netcraft");
+            Client.DefaultRequestHeaders.UserAgent.ParseAdd(Constants.UserAgent);
             Client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             Client.DefaultRequestHeaders.Accept.ParseAdd("*/*");
 

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Netcraft
 {
     internal class Constants
     {
+        public const string UserAgent = "Netcraft C# Client - actually-akac/Netcraft";
+
         public static readonly JsonSerializerOptions EnumOptions = new()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
