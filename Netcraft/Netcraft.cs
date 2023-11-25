@@ -1,5 +1,4 @@
 ﻿using Netcraft.Modules;
-using System;
 using System.Net;
 using System.Net.Http;
 
@@ -10,17 +9,17 @@ namespace Netcraft
     /// </summary>
     public class NetcraftClient
     {
-        public const int Version = 3;
-        public static readonly Uri BaseUri = new($"https://report.netcraft.com/api/v{Version}/");
-
-        /// <summary>
-        /// The primary HTTP client for sending API requests.
-        /// </summary>
-        private readonly HttpClient Client = new(new HttpClientHandler()
+        private static readonly HttpClientHandler HttpHandler = new()
         {
             AutomaticDecompression = DecompressionMethods.All,
             AllowAutoRedirect = false
-        }) { BaseAddress = BaseUri, DefaultRequestVersion = new(2, 0), Timeout = TimeSpan.FromMinutes(5) };
+        };
+
+        private readonly HttpClient Client = new(HttpHandler)
+        {
+            BaseAddress = Constants.BaseUri,
+            DefaultRequestVersion = Constants.HttpVersion
+        };
 
         /// <summary>
         /// Create a new instance of the API client.

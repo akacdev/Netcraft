@@ -11,7 +11,7 @@ namespace Netcraft.Entities
         public string Message { get; set; }
 
         [JsonPropertyName("uuid")]
-        public string UUID { get; set; }
+        public string Uuid { get; set; }
     }
 
     /// <summary>

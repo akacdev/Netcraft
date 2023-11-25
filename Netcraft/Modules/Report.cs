@@ -52,10 +52,10 @@ namespace Netcraft.Modules
         public async Task<string> Urls(UrlsReportParameters parameters)
         {
             if (parameters is null) throw new ArgumentNullException(nameof(parameters), "URLs report parameters are null.");
-            if (string.IsNullOrEmpty(parameters.Email)) throw new ArgumentNullException(nameof(parameters.Email), "Email is null.");
-            if (string.IsNullOrEmpty(parameters.Reason)) throw new ArgumentNullException(nameof(parameters.Reason), "Reason is null.");
-            if (parameters.Reason.Length > 10000) throw new ArgumentOutOfRangeException(nameof(parameters.Reason), "Reason is over 10 000 characters.");
-            if (parameters.Urls is null) throw new ArgumentNullException(nameof(parameters.Urls), "URLs are null.");
+            if (string.IsNullOrEmpty(parameters.Email)) throw new ArgumentNullException(nameof(parameters), "Email is null.");
+            if (string.IsNullOrEmpty(parameters.Reason)) throw new ArgumentNullException(nameof(parameters), "Reason is null.");
+            if (parameters.Reason.Length > 10000) throw new ArgumentOutOfRangeException(nameof(parameters), "Reason is over 10 000 characters.");
+            if (parameters.Urls is null) throw new ArgumentNullException(nameof(parameters), "URLs are null.");
             if (parameters.Urls.Length == 0) throw new ArgumentException("No URLs were provided.", nameof(parameters));
 
             HttpResponseMessage res = await Client.Request(HttpMethod.Post, "report/urls", parameters);
@@ -64,7 +64,7 @@ namespace Netcraft.Modules
             if (result.Message != Constants.SuccessReportMessage)
                 throw new NetcraftException($"URLs reporting response has an unexpected message: {result.Message}");
 
-            return result.UUID;
+            return result.Uuid;
         }
 
         /// <summary>
@@ -95,9 +95,9 @@ namespace Netcraft.Modules
         public async Task<string> Email(EmailReportParameters parameters)
         {
             if (parameters is null) throw new ArgumentNullException(nameof(parameters), "Email report parameters are null.");
-            if (string.IsNullOrEmpty(parameters.Email)) throw new ArgumentNullException(nameof(parameters.Email), "Email is null.");
-            if (string.IsNullOrEmpty(parameters.Message)) throw new ArgumentNullException(nameof(parameters.Message), "Message is null.");
-            if (parameters.Message.Length > 20971520) throw new ArgumentOutOfRangeException(nameof(parameters.Message), "Reason is over 20 MiB.");
+            if (string.IsNullOrEmpty(parameters.Email)) throw new ArgumentNullException(nameof(parameters), "Email is null.");
+            if (string.IsNullOrEmpty(parameters.Message)) throw new ArgumentNullException(nameof(parameters), "Message is null.");
+            if (parameters.Message.Length > 20971520) throw new ArgumentOutOfRangeException(nameof(parameters), "Reason is over 20 MiB.");
 
             HttpResponseMessage res = await Client.Request(HttpMethod.Post, "report/email", parameters);
 
@@ -105,7 +105,7 @@ namespace Netcraft.Modules
             if (result.Message != Constants.SuccessReportMessage)
                 throw new NetcraftException($"Email reporting response has an unexpected message: {result.Message}");
 
-            return result.UUID;
+            return result.Uuid;
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace Netcraft.Modules
         public async Task Mistake(MistakeReportParameters parameters)
         {
             if (parameters is null) throw new ArgumentNullException(nameof(parameters), "Email report parameters are null.");
-            if (string.IsNullOrEmpty(parameters.Email)) throw new ArgumentNullException(nameof(parameters.Email), "Email is null.");
-            if (string.IsNullOrEmpty(parameters.Reason)) throw new ArgumentNullException(nameof(parameters.Reason), "Reason is null.");
-            if (string.IsNullOrEmpty(parameters.Url)) throw new ArgumentNullException(nameof(parameters.Url), "URL is null.");
+            if (string.IsNullOrEmpty(parameters.Email)) throw new ArgumentNullException(nameof(parameters), "Email is null.");
+            if (string.IsNullOrEmpty(parameters.Reason)) throw new ArgumentNullException(nameof(parameters), "Reason is null.");
+            if (string.IsNullOrEmpty(parameters.Url)) throw new ArgumentNullException(nameof(parameters), "URL is null.");
 
             HttpResponseMessage res = await Client.Request(HttpMethod.Post, "report/mistake", parameters);
 

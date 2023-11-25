@@ -1,12 +1,8 @@
-﻿# Netcraft
+# Netcraft
 
-<div align="center">
-  <img width="350" height="61" src="https://www.netcraft.com/wp-content/uploads/2023/01/netcraft-logo.svg">
-</div>
+![](https://raw.githubusercontent.com/actually-akac/Netcraft/master/Netcraft/banner.png)
 
-<div align="center">
-  An async and lightweight C# library for interacting with the Netcraft API.
-</div>
+### An async and lightweight C# library for interacting with the Netcraft API.
 
 ## Usage
 This library provides an easy interface for interacting with the Netcraft API. Most importantly, it empowers you to seamlessly automate the reporting of malicious URLs and emails to Netcraft.

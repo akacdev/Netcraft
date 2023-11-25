@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!--Basic Information-->
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <PackageId>Netcraft</PackageId>
     <Product>Netcraft</Product>
     <Authors>akac</Authors>
@@ -10,7 +10,7 @@
     <Description>An async and lightweight C# library for interacting with the Netcraft API.</Description>
     <PackageTags>netcraft; phishing; smishing; threat; scam; malware; email; abuse; cybercrime; takedown; blacklist; classification</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReadmeFile>README_NuGet.md</PackageReadmeFile>
+    <PackageReadmeFile>NuGet.md</PackageReadmeFile>
 
     <!--Version-->
     <Version>1.0.1</Version>
@@ -32,7 +32,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <NeutralLanguage>en</NeutralLanguage>
-    
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -48,7 +47,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="README_NuGet.md">
+    <None Include="NuGet.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

@@ -392,7 +392,7 @@ namespace Netcraft.Entities
     public class SubmissionUrl
     {
         [JsonPropertyName("uuid")]
-        public string UUID { get; set; }
+        public string Uuid { get; set; }
 
         [JsonPropertyName("url")]
         public string Value { get; set; }

@@ -1,103 +1,64 @@
 ﻿using Netcraft.Entities;
-using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Netcraft
 {
-    public static class API
+    internal static class API
     {
-        public const int MaxRetries = 3;
-        public const int RetryDelay = 1000 * 1;
-        public const int PreviewMaxLength = 500;
-
         public static async Task<HttpResponseMessage> Request
         (
             this HttpClient cl,
             HttpMethod method,
-            string url,
+            string path,
             object obj,
             HttpStatusCode target = HttpStatusCode.OK,
             JsonSerializerOptions options = null)
-        => await Request(cl, method, url, new StringContent(JsonSerializer.Serialize(obj, options ?? Constants.EnumOptions), Encoding.UTF8, "application/json"), target);
+        => await Request(cl, method, path, await obj.Serialize(options ?? Constants.EnumOptions), target);
 
         public static async Task<HttpResponseMessage> Request
         (
             this HttpClient cl,
             HttpMethod method,
-            string url,
+            string path,
             HttpContent content = null,
             HttpStatusCode target = HttpStatusCode.OK)
         {
-            HttpRequestMessage req = new(method, url)
+            using HttpRequestMessage req = new(method, path)
             {
                 Content = content
             };
 
             HttpResponseMessage res = await cl.SendAsync(req);
+            content?.Dispose();
 
-            if ((int)res.StatusCode > 500) throw new NetcraftException("Received a failure status code.");
+            if (target.HasFlag(res.StatusCode)) return res;
 
-            if (!target.HasFlag(res.StatusCode))
+            NetcraftError error = await res.Deseralize<NetcraftError>() ??
+                throw new NetcraftException($"Failed to request {method} {path}, received status code {res.StatusCode}\nPreview: {await res.GetPreview()}", res);
+
+            StringBuilder sb = new();
+
+            sb.AppendLine($"Failed to request {method} {path}, received the following API error:");
+            sb.AppendLine($"Status: {error.Status}");
+            if (!string.IsNullOrEmpty(error.Description)) sb.AppendLine($"Description: {error.Description}");
+
+            if (error.Details is not null && error.Details.Length > 0)
             {
-                string text = await res.Content.ReadAsStringAsync();
-
-                MediaTypeHeaderValue contentType = res.Content.Headers.ContentType;
-                if (contentType is null) throw new NetcraftException("The 'Content-Type' header is missing in the response.", method.ToString(), url);
-
-                bool isJson = contentType.MediaType.StartsWith("application/json", StringComparison.InvariantCultureIgnoreCase);
-                if (!isJson)
-                    throw new NetcraftException(
-                            $"received status code {res.StatusCode} and Content-Type {contentType.MediaType}" +
-                            $"\nPreview: {text[..Math.Min(text.Length, PreviewMaxLength)]}",
-                        method.ToString(),
-                        url);
-
-                NetcraftError error = await res.Deseralize<NetcraftError>();
-                if (error is null) throw new NetcraftException("Parsed error object is null.", method.ToString(), url);
-
-                StringBuilder sb = new();
-                sb.AppendLine("Operation resulted in the following API error:");
-                sb.AppendLine($"\nStatus: {error.Status}");
-                if (!string.IsNullOrEmpty(error.Description)) sb.AppendLine($"\nDescription: {error.Description}");
-
-                if (error.Details is not null && error.Details.Length > 0)
+                for (int i = 0; i < error.Details.Length; i++)
                 {
-                    for (int i = 0; i < error.Details.Length; i++)
-                    {
-                        ErrorDetail detail = error.Details[i];
+                    ErrorDetail detail = error.Details[i];
 
-                        sb.AppendLine($"[#{i + 1}] {detail.Message} caused by input '{detail.Input}' at '{detail.Path}'");
-                    }
+                    sb.AppendLine(string.Concat(
+                        $"[#{i + 1}] {detail.Message}",
+                        (string.IsNullOrEmpty(detail.Input) || string.IsNullOrEmpty(detail.Path)) ? "" : $" caused by input \"{detail.Input}\" at \"{detail.Path}\""));
                 }
-
-                throw new NetcraftException(sb.ToString());
             }
 
-            return res;
-        }
-
-        public static async Task<T> Deseralize<T>(this HttpResponseMessage res, JsonSerializerOptions options = null)
-        {
-            Stream stream = await res.Content.ReadAsStreamAsync();
-            if (stream.Length == 0) throw new NetcraftException("Response content is empty, can't parse as JSON.");
-
-            try
-            {
-                return await JsonSerializer.DeserializeAsync<T>(stream, options ?? Constants.EnumOptions);
-            }
-            catch (Exception ex)
-            {
-                using StreamReader sr = new(stream);
-                string text = await sr.ReadToEndAsync();
-
-                throw new NetcraftException($"Exception while parsing JSON: {ex.GetType().Name} => {ex.Message}\nPreview: {text[..Math.Min(text.Length, PreviewMaxLength)]}");
-            }
+            throw new NetcraftException(sb.ToString(), res);
         }
     }
 }

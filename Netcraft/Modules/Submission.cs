@@ -71,7 +71,7 @@ namespace Netcraft.Modules
             if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count), "Count is zero or a negative number.");
 
             HttpResponseMessage res = await Client.Request(HttpMethod.Get,
-                $"submission/{uuid.UrlEncode()}/urls" +
+                    $"submission/{uuid.UrlEncode()}/urls" +
                     $"?count={count}" +
                     $"&dir={direction.ToApi()}" +
                     (urlFilter is null ? "" : $"&url={urlFilter}") +
@@ -209,11 +209,11 @@ namespace Netcraft.Modules
         {
             if (string.IsNullOrEmpty(uuid)) throw new ArgumentNullException(nameof(uuid), "UUID is null.");
             if (parameters is null) throw new ArgumentNullException(nameof(parameters), "Parameters are null.");
-            if (parameters.AdditionalInfo is null) throw new ArgumentNullException(nameof(parameters.AdditionalInfo), "Additional info is null.");
-            if (parameters.AdditionalInfo.Length > 10000) throw new ArgumentOutOfRangeException(nameof(parameters.AdditionalInfo), "Additional info is over 10 000 characters.");
-            if (parameters.UrlMisclassifications is null) throw new ArgumentNullException(nameof(parameters.UrlMisclassifications), "URL misclassifications are null.");
+            if (parameters.AdditionalInfo is null) throw new ArgumentNullException(nameof(parameters), "Additional info is null.");
+            if (parameters.AdditionalInfo.Length > 10000) throw new ArgumentOutOfRangeException(nameof(parameters), "Additional info is over 10 000 characters.");
+            if (parameters.UrlMisclassifications is null) throw new ArgumentNullException(nameof(parameters), "URL misclassifications are null.");
             if (parameters.UrlMisclassifications.Length == 0) throw new ArgumentException("No URL misclassifications were provided.", nameof(parameters));
-            if (parameters.FilenameMisclassifications is null) throw new ArgumentNullException(nameof(parameters.FilenameMisclassifications), "File misclassifications are null.");
+            if (parameters.FilenameMisclassifications is null) throw new ArgumentNullException(nameof(parameters), "File misclassifications are null.");
             if (parameters.FilenameMisclassifications.Length == 0) throw new ArgumentException("No file misclassifications were provided.", nameof(parameters));
 
             await Client.Request(HttpMethod.Post, $"submission/{WebUtility.UrlEncode(uuid)}/report_issue", parameters);
@@ -224,20 +224,20 @@ namespace Netcraft.Modules
         /// <summary>
         /// Get a screenshot of a URL.
         /// </summary>
-        /// <param name="submissionUUID">The <c>UUID</c> of this submission.</param>
-        /// <param name="urlUUID">The <c>UUID</c> of this URL.</param>
+        /// <param name="submissionUuid">The <c>UUID</c> of this submission.</param>
+        /// <param name="urlUuid">The <c>UUID</c> of this URL.</param>
         /// <param name="screenshotHash">The hash of this screenshot.</param>
         /// <returns>A stream of the image. Either <c>image/png</c> or <c>image/gif</c>.</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="NetcraftException"></exception>
-        public async Task<Stream> GetUrlScreenshot(string submissionUUID, string urlUUID, string screenshotHash)
+        public async Task<Stream> GetUrlScreenshot(string submissionUuid, string urlUuid, string screenshotHash)
         {
-            if (string.IsNullOrEmpty(submissionUUID)) throw new ArgumentNullException(nameof(submissionUUID), "Submission UUID is null.");
-            if (string.IsNullOrEmpty(urlUUID)) throw new ArgumentNullException(nameof(urlUUID), "URL UUID is null.");
+            if (string.IsNullOrEmpty(submissionUuid)) throw new ArgumentNullException(nameof(submissionUuid), "Submission UUID is null.");
+            if (string.IsNullOrEmpty(urlUuid)) throw new ArgumentNullException(nameof(urlUuid), "URL UUID is null.");
             if (string.IsNullOrEmpty(screenshotHash)) throw new ArgumentNullException(nameof(screenshotHash), "Screenshot hash is null.");
 
             HttpResponseMessage res = await Client.Request(HttpMethod.Get,
-                $"submission/{submissionUUID.UrlEncode()}/urls/{urlUUID.UrlEncode()}/screenshots/{screenshotHash.UrlEncode()}");
+                $"submission/{submissionUuid.UrlEncode()}/urls/{urlUuid.UrlEncode()}/screenshots/{screenshotHash.UrlEncode()}");
 
             return await res.Content.ReadAsStreamAsync();
         }

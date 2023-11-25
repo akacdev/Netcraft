@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using System.Net;
 using Netcraft.Entities;
 
 namespace Netcraft
@@ -9,31 +11,36 @@ namespace Netcraft
     public class NetcraftException : Exception
     {
         /// <summary>
-        /// The HTTP method that caused this exception.
+        /// The HTTP request method used that triggered this exception.
         /// </summary>
-        public string Method { get; set; }
-
+        public HttpMethod Method { get; set; }
         /// <summary>
-        /// The requested path or URL that caused this exception.
+        /// The HTTP path used that triggered this exception.
         /// </summary>
-        public string Url { get; set; }
+        public string Path { get; set; }
+        /// <summary>
+        /// The HTTP status code used that triggered this exception.
+        /// </summary>
+        public HttpStatusCode? StatusCode { get; set; }
 
         /// <summary>
         /// An array of user-friendly API errors.
         /// </summary>
         public NetcraftError[] Errors { get; set; } = Array.Empty<NetcraftError>();
 
-        public NetcraftException(string message, string method = null, string url = null) : base(message)
+        public NetcraftException(string message) : base(message) { }
+        public NetcraftException(string message, HttpResponseMessage res) : base(message)
         {
-            Method = method;
-            Url = url;
+            Method = res.RequestMessage.Method;
+            Path = res.RequestMessage.RequestUri.AbsolutePath;
+            StatusCode = res.StatusCode;
         }
-
-        public NetcraftException(string message, NetcraftError[] errors, string method = null, string url = null) : base(message)
+        public NetcraftException(string message, NetcraftError[] errors, HttpResponseMessage res) : base(message)
         {
             Errors = errors;
-            Method = method;
-            Url = url;
+            Method = res.RequestMessage.Method;
+            Path = res.RequestMessage.RequestUri.AbsolutePath;
+            StatusCode = res.StatusCode;
         }
     }
 }

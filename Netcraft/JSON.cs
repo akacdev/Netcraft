@@ -34,7 +34,6 @@ namespace Netcraft
                 _ => throw new JsonException(),
             };
         }
-
     }
 
     public class BoolConverter : JsonConverter<bool>
@@ -55,6 +54,5 @@ namespace Netcraft
                 _ => throw new JsonException(),
             };
         }
-
     }
 }
